@@ -1,0 +1,3 @@
+domain: 'localhost.com'
+aws:
+  bucket_name: 'myapp-dev'

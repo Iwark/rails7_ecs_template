@@ -1,0 +1,99 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: admin_pass
+      POSTGRES_USER: myuser
+    expose:
+      - "5433"
+    volumes:
+      - ./tmp/backups:/home/backups
+    ports:
+      - "5433:5433"
+    command: -p 5433
+  redis:
+    image: redis:6.0
+    restart: always
+    command: --port 6380
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6380:6380
+    expose:
+      - "6380"
+    logging:
+      driver: none
+  sidekiq:
+    build: ./
+    command: bundle exec sidekiq
+    volumes:
+      - ./:/app
+      - ./vendor/bundle:/app/vendor/bundle
+      # exclude volumes
+      - /app/vendor
+      - /app/tmp
+      - /app/log
+      - /app/.git
+    environment:
+      DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb
+      RAILS_ENV: development
+      REDIS_HOST: redis
+      REDIS_PORT: 6380
+      BUNDLE_PATH: /app/vendor/bundle
+      BUNDLE_WITHOUT:
+    depends_on:
+      - "redis"
+  web: &app_base
+    build: ./
+    command: bin/rails s -p 3000 -e development -b '0.0.0.0'
+    environment:
+      TEST_DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb_test
+      DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb
+      RAILS_ENV: development
+      NODE_ENV: development
+      RAILS_MAX_THREADS: 5
+      REDIS_HOST: redis
+      REDIS_PORT: 6380
+      BUNDLE_PATH: /app/vendor/bundle
+      BUNDLE_WITHOUT:
+    volumes:
+      - ./:/app
+      - ./vendor/bundle:/app/vendor/bundle
+      # exclude volumes
+      - /app/vendor
+      - /app/tmp
+      - /app/log
+      - /app/.git
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "db"
+      - "redis"
+  webpack:
+    <<: *app_base
+    command: "bin/webpack-dev-server"
+    ports:
+      - "3035:3035"
+    depends_on:
+      - "web"
+    tty: false
+    stdin_open: false
+  guard:
+    build: ./
+    command: bundle exec guard --no-bundler-warning --no-interactions
+    environment:
+      TEST_DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb_test
+      RAILS_ENV: test
+      BUNDLE_PATH: /app/vendor/bundle
+      BUNDLE_WITHOUT:
+    volumes:
+      - ./:/app
+      - ./vendor/bundle:/app/vendor/bundle
+    depends_on:
+      - "db"
+volumes:
+  db:
+  bundle:
+  redis-data:
