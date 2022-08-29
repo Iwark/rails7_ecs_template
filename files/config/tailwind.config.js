@@ -6,7 +6,6 @@ module.exports = {
     './app/views/**/*.{erb,haml,html,slim}'
   ],
   mode: 'jit',
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
   },
