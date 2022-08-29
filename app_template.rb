@@ -39,6 +39,10 @@ get_remote('app/assets/config/manifest.js')
 get_remote('app/javascript/controllers/index.js')
 get_remote('app/javascript/application.js')
 
+# tailwind
+get_remote('config/tailwind.config.js')
+get_remote('app/assets/stylesheets/application.tailwind.css')
+
 #####
 # Install gems
 #####
@@ -218,9 +222,6 @@ get_remote('config/initializers/web_app_manifest.rb')
 
 # storage
 get_remote('config/storage.rb')
-
-# tailwind
-get_remote('config/tailwind.config.js')
 
 # importmap
 get_remote('config/importmap.rb')
