@@ -1,4 +1,4 @@
-name: build
+name: deploy
 
 on:
   push:
@@ -50,14 +50,6 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/bundle
           cache-to: type=local,dest=/tmp/.buildx-cache-new/bundle
 
-      - name: Build yarn stage
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          target: yarn
-          cache-from: type=local,src=/tmp/.buildx-cache/yarn
-          cache-to: type=local,dest=/tmp/.buildx-cache-new/yarn
-
       - name: Build and Push
         uses: docker/build-push-action@v2
         env:
@@ -72,7 +64,6 @@ jobs:
           push: true
           cache-from: |
             type=local,src=/tmp/.buildx-cache-new/bundle
-            type=local,src=/tmp/.buildx-cache-new/yarn
           cache-to: type=inline
 
       # Temp fix
