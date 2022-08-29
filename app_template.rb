@@ -43,6 +43,10 @@ get_remote('app/javascript/application.js')
 run 'mkdir vendor/javascript'
 run 'touch vendor/javascript/.keep'
 
+# components
+run 'mkdir app/components'
+get_remote('app/components/app_component.rb')
+
 # tailwind
 get_remote('config/tailwind.config.js')
 get_remote('app/assets/stylesheets/application.tailwind.css')
