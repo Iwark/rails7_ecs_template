@@ -10,7 +10,13 @@ default: &default
 
 development:
   <<: *default
+
 test:
   <<: *default
+  url: <%= ENV['TEST_DATABASE_URL'] %>
+
 production:
+  <<: *default
+
+staging:
   <<: *default

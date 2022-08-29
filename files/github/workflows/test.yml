@@ -16,9 +16,7 @@ jobs:
     strategy:
       matrix:
         ruby-version:
-          - "3.0.2"
-        node-version:
-          - "16.1.0"
+          - "3.1.2"
         database-name:
           - mydb
         database-password:
@@ -52,24 +50,11 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: Set up Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install packages
-        run: |
-          yarn install --check-files
-
-      - name: Setup test database
+      - name: Run test
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
+          TEST_DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
         run: |
-          bundle exec rails db:migrate
-          bundle exec rails db:seed
-
-      - name: Run test
-        run: bundle exec rspec
-        env:
-          DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
+          bundle exec rails assets:precompile
+          bundle exec rails db:test:prepare
+          bundle exec rspec

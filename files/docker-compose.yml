@@ -25,29 +25,9 @@ services:
       - "6380"
     logging:
       driver: none
-  sidekiq:
-    build: ./
-    command: bundle exec sidekiq
-    volumes:
-      - ./:/app
-      - ./vendor/bundle:/app/vendor/bundle
-      # exclude volumes
-      - /app/vendor
-      - /app/tmp
-      - /app/log
-      - /app/.git
-    environment:
-      DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb
-      RAILS_ENV: development
-      REDIS_HOST: redis
-      REDIS_PORT: 6380
-      BUNDLE_PATH: /app/vendor/bundle
-      BUNDLE_WITHOUT:
-    depends_on:
-      - "redis"
   web: &app_base
     build: ./
-    command: bin/rails s -p 3000 -e development -b '0.0.0.0'
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec foreman start -f Procfile.dev"
     environment:
       TEST_DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb_test
       DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb
@@ -71,28 +51,7 @@ services:
     depends_on:
       - "db"
       - "redis"
-  webpack:
-    <<: *app_base
-    command: "bin/webpack-dev-server"
-    ports:
-      - "3035:3035"
-    depends_on:
-      - "web"
-    tty: false
-    stdin_open: false
-  guard:
-    build: ./
-    command: bundle exec guard --no-bundler-warning --no-interactions
-    environment:
-      TEST_DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb_test
-      RAILS_ENV: test
-      BUNDLE_PATH: /app/vendor/bundle
-      BUNDLE_WITHOUT:
-    volumes:
-      - ./:/app
-      - ./vendor/bundle:/app/vendor/bundle
-    depends_on:
-      - "db"
+    tty: true
 volumes:
   db:
   bundle:
