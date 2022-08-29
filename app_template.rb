@@ -61,9 +61,6 @@ run 'bundle lock --add-platform x86_64-linux-musl'
 run 'bundle install --path vendor/bundle --jobs=4'
 run 'docker compose run web bundle install'
 
-# install hotwire
-run 'bundle exec rails hotwire:install'
-
 # Fix pesky hangtime
 run "spring stop"
 
