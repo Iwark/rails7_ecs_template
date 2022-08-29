@@ -39,6 +39,10 @@ get_remote('app/assets/config/manifest.js')
 get_remote('app/javascript/controllers/index.js')
 get_remote('app/javascript/application.js')
 
+# vendor
+run 'mkdir vendor/javascript'
+run 'touch vendor/javascript/.keep'
+
 # tailwind
 get_remote('config/tailwind.config.js')
 get_remote('app/assets/stylesheets/application.tailwind.css')
