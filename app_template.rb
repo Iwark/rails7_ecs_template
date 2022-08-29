@@ -64,9 +64,6 @@ run 'docker compose run web bundle install'
 # Fix pesky hangtime
 run "spring stop"
 
-# Simple Form
-run 'bundle exec rails g simple_form:install'
-
 # Devise
 run 'bundle exec rails g devise:install'
 get_remote('config/locales/devise.en.yml')
