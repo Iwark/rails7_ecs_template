@@ -47,6 +47,10 @@ run 'touch vendor/javascript/.keep'
 run 'mkdir app/components'
 get_remote('app/components/app_component.rb')
 
+# validators
+run 'mkdir app/validators'
+get_remote('app/validators/phone_number_validator.rb')
+
 # tailwind
 get_remote('config/tailwind.config.js')
 get_remote('app/assets/stylesheets/application.tailwind.css')
@@ -62,7 +66,7 @@ run 'bundle install --path vendor/bundle --jobs=4'
 run 'docker compose run web bundle install'
 
 # Fix pesky hangtime
-run "spring stop"
+run "bundle exec spring stop"
 
 # Devise
 run 'bundle exec rails g devise:install'
@@ -84,7 +88,7 @@ application  do
     config.active_record.default_timezone = :local
     
     # i18n default to japanese
-    I18n.available_locales = [:en, :ja]
+    I18n.available_locales = %i[en ja]
     I18n.enforce_available_locales = true
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :ja
@@ -92,8 +96,8 @@ application  do
     # generator settings
     config.generators do |g|
       g.orm :active_record
-      g.template_engine :slim
-      g.test_framework  :rspec, :fixture => true
+      g.template_engine :erb
+      g.test_framework  :rspec, fixture: true
       g.view_specs false
       g.controller_specs false
       g.routing_specs false
@@ -106,6 +110,9 @@ application  do
     # load lib files
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
+    # load validators
+    config.autoload_paths += Dir[Rails.root.join('app', 'validators', '*')]
 
     # use sidekiq as active_job.queue_adapter
     config.active_job.queue_adapter = :sidekiq
