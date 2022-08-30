@@ -85,7 +85,6 @@ gem 'sentry-ruby'
 gem 'sidekiq', '~> 6.4.2'
 gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
-gem 'slim-rails'
 gem 'switch_user'
 gem 'view_component', '>= 2.50.0'
 
@@ -120,7 +119,6 @@ group :development do
   ## custom gems
   gem 'bullet'
   gem 'foreman'
-  gem 'html2slim'
   gem 'seed_dump'
   gem 'yard'
 end
@@ -132,9 +130,9 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 3.26'
-  
+
   gem 'selenium-webdriver'
-  
+
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
 

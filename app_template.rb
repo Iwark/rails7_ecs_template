@@ -170,9 +170,6 @@ gsub_file "config/environments/production.rb", 'config.active_storage.service = 
 # Japanese locale
 run 'wget https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
-# erb to slim
-run 'bundle exec erb2slim -d app/views'
-
 # irbrc
 get_remote('irbrc', '.irbrc')
 

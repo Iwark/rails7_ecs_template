@@ -5,7 +5,6 @@ It generates a rails project with:
 - Ruby 3.1.2
 - Rails 7.0
 - [tailwind](https://tailwindcss.com/)
-- [slim template](http://slim-lang.com/)
 - [sidekiq](https://github.com/mperham/sidekiq) with Redis
 - [Sentry](https://sentry.io/)
 

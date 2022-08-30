@@ -1,6 +1,6 @@
 module.exports = {
   content: [
-    './app/components/**/*.{html.slim,scss,js,rb}',
+    './app/components/**/*.{erb,haml,html,slim,scss,js,rb}',
     './app/helpers/**/*.rb',
     './app/javascript/**/*.js',
     './app/views/**/*.{erb,haml,html,slim}'
