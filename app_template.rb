@@ -201,8 +201,8 @@ remove_file 'test'
 run 'mkdir config/locales/components'
 run 'mkdir config/locales/components/common'
 run 'mkdir config/locales/components/ui'
-get_remote('config/components/common/.keep')
-get_remote('config/components/ui/.keep')
+get_remote('config/locales/components/common/.keep')
+get_remote('config/locales/components/ui/.keep')
 
 ## models
 run 'mkdir config/locales/models'
