@@ -7,35 +7,35 @@ services:
       POSTGRES_PASSWORD: admin_pass
       POSTGRES_USER: myuser
     expose:
-      - "5433"
+      - "$DB_PORT"
     volumes:
       - ./tmp/backups:/home/backups
     ports:
-      - "5433:5433"
-    command: -p 5433
+      - "$DB_PORT:$DB_PORT"
+    command: -p $DB_PORT
   redis:
     image: redis:6.0
     restart: always
-    command: --port 6380
+    command: --port $REDIS_PORT
     volumes:
       - redis-data:/data
     ports:
-      - 6380:6380
+      - $REDIS_PORT:$REDIS_PORT
     expose:
-      - "6380"
+      - "$REDIS_PORT"
     logging:
       driver: none
   web: &app_base
     build: ./
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec foreman start -f Procfile.dev"
     environment:
-      TEST_DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb_test
-      DATABASE_URL: postgres://myuser:admin_pass@db:5433/mydb
+      TEST_DATABASE_URL: postgres://myuser:admin_pass@db:$DB_PORT/mydb_test
+      DATABASE_URL: postgres://myuser:admin_pass@db:$DB_PORT/mydb
       RAILS_ENV: development
       NODE_ENV: development
       RAILS_MAX_THREADS: 5
       REDIS_HOST: redis
-      REDIS_PORT: 6380
+      REDIS_PORT: $REDIS_PORT
       BUNDLE_PATH: /app/vendor/bundle
       BUNDLE_WITHOUT:
     volumes:
@@ -47,7 +47,7 @@ services:
       - /app/log
       - /app/.git
     ports:
-      - "3000:3000"
+      - "$WEB_PORT:$WEB_PORT"
     depends_on:
       - "db"
       - "redis"

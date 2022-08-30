@@ -30,6 +30,15 @@ get_remote('Dockerfile')
 get_remote('docker-compose.yml')
 get_remote('Procfile.dev')
 
+@db_port = ask("Port for dev Postgres server (default: 5433)") || '5433'
+@redis_port = ask("Port for dev Redis server (default: 6380)") || '6380'
+@web_port = ask("Port for dev Web server (default: 3000)") || '3000'
+
+gsub_file "docker-compose.yml", '$DB_PORT', @db_port
+gsub_file "docker-compose.yml", '$REDIS_PORT', @redis_port
+gsub_file "docker-compose.yml", '$WEB_PORT', @web_port
+gsub_file "Procfile.dev", '$WEB_PORT', @web_port
+
 # Set database config to use postgresql
 get_remote('config/database.yml.example', 'config/database.yml')
 run 'mkdir tmp/backups'
@@ -184,7 +193,7 @@ run "echo '--color -f d' > .rspec"
 get_remote('spec/rails_helper.rb')
 run 'mkdir spec/validators'
 get_remote('spec/validators/phone_number_validator_spec.rb')
-remove_file test
+remove_file 'test'
 
 # locales
 
