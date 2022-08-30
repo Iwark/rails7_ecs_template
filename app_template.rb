@@ -70,7 +70,7 @@ get_remote('Gemfile')
 run 'bundle lock --add-platform aarch64-linux-musl'
 run 'bundle lock --add-platform x86_64-linux-musl'
 run 'bundle install --path vendor/bundle --jobs=4'
-run 'docker compose run web bundle install'
+run 'docker compose run --rm web bundle install'
 
 # Fix pesky hangtime
 run "bundle exec spring stop"
@@ -80,7 +80,7 @@ run 'bundle exec rails g devise:install'
 gsub_file "config/initializers/devise.rb", /'please-change-me-at-config-initializers-devise@example.com'/, '"no-reply@#{Settings.domain}"'
 
 # set up db
-run 'docker compose run web bundle exec rails db:create'
+run 'docker compose run --rm web bundle exec rails db:create'
 
 # annotate gem
 run 'bundle exec rails g annotate:install'
