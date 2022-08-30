@@ -14,5 +14,11 @@ Documentation:
 Lint/EmptyBlock:
   Exclude:
     - "spec/factories/*"
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - production
+    - staging
+    - test
 Style/FrozenStringLiteralComment:
   Enabled: false
