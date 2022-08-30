@@ -3,17 +3,16 @@ require:
   - rubocop-rspec
 AllCops:
   NewCops: enable
+  Exclude:
+    - "bin/**/*"
+    - "config/**/*"
+    - "db/**/*"
+    - "vendor/**/*"
+    - "lib/tasks/auto_annotate_models.rake"
 Documentation:
   Enabled: false
-Layout/LineLength:
+Lint/EmptyBlock:
   Exclude:
-    - "config/**/*"
-Metrics/BlockLength:
-  Exclude:
-    - "config/**/*"
-    - "lib/tasks/auto_annotate_models.rake"
-Rails/FilePath:
-  Exclude:
-    - "config/**/*"
+    - "spec/factories/*"
 Style/FrozenStringLiteralComment:
   Enabled: false

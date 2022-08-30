@@ -43,11 +43,6 @@ gsub_file "Procfile.dev", '$WEB_PORT', @web_port
 get_remote('config/database.yml.example', 'config/database.yml')
 run 'mkdir tmp/backups'
 
-# assets
-get_remote('app/assets/config/manifest.js')
-get_remote('app/javascript/controllers/index.js')
-get_remote('app/javascript/application.js')
-
 # vendor
 run 'mkdir vendor/javascript'
 run 'touch vendor/javascript/.keep'
@@ -278,14 +273,18 @@ get_remote('config/initializers/web_app_manifest.rb')
 # storage
 get_remote('config/storage.rb')
 
-# importmap
-get_remote('config/importmap.rb')
-
 # i18n-tasks
 get_remote('config/i18n-tasks.yml')
 run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
 
 after_bundle do
+
+  # javascripts & importmap
+  get_remote('app/assets/config/manifest.js')
+  get_remote('app/javascript/controllers/index.js')
+  get_remote('app/javascript/application.js')
+
+  get_remote('config/importmap.rb')
 
   # rubocop
   run 'bundle exec rubocop -A'
