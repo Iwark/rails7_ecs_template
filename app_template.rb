@@ -58,6 +58,9 @@ get_remote('app/validators/phone_number_validator.rb')
 # tailwind
 get_remote('config/tailwind.config.js')
 get_remote('app/assets/stylesheets/application.tailwind.css')
+insert_into_file 'app/views/layouts/application.html.erb', %(
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload", media: "all" %>
+), after: '<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>'
 
 #####
 # Install gems
