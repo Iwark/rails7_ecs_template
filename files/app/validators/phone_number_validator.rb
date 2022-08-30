@@ -1,5 +1,4 @@
 class PhoneNumberValidator < ActiveModel::EachValidator
-  
   PHONE_REGEX = /\A
     (((0(
       \d{1}[-(]?\d{4}|        # 01-1234
@@ -12,11 +11,10 @@ class PhoneNumberValidator < ActiveModel::EachValidator
     )\d{4}|
     0120[-(]?\d{3}[-)]?\d{3}) # toll-free 0120-123-456
   \z/x
-  
-  
+
   def validate_each(record, attr, value)
     return if value.blank? || value =~ PHONE_REGEX
-    
-    record.errors.add(attr, options[:message] || :invalid_format)
+
+    record.errors.add(attr, options[:message] || :invalid_phone_number_format)
   end
 end

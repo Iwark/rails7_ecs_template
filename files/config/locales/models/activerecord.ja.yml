@@ -1,0 +1,6 @@
+---
+ja:
+  activerecord:
+    errors:
+      messages:
+        invalid_phone_number_format: 正しい電話番号ではありません

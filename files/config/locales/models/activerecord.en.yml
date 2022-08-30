@@ -1,0 +1,6 @@
+---
+en:
+  activerecord:
+    errors:
+      messages:
+        invalid_phone_number_format: Invalid phone number format

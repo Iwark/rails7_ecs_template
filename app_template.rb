@@ -70,8 +70,6 @@ run "bundle exec spring stop"
 
 # Devise
 run 'bundle exec rails g devise:install'
-get_remote('config/locales/devise.en.yml')
-get_remote('config/locales/devise.ja.yml')
 gsub_file "config/initializers/devise.rb", /'please-change-me-at-config-initializers-devise@example.com'/, '"no-reply@#{Settings.domain}"'
 
 # set up db
@@ -184,7 +182,47 @@ run 'bundle exec rails g kaminari:config'
 run 'bundle exec rails g rspec:install'
 run "echo '--color -f d' > .rspec"
 get_remote('spec/rails_helper.rb')
+run 'mkdir spec/validators'
+get_remote('spec/validators/phone_number_validator_spec.rb')
 remove_file test
+
+# locales
+
+## components
+run 'mkdir config/locales/components'
+run 'mkdir config/locales/components/common'
+run 'mkdir config/locales/components/ui'
+get_remote('config/components/common/.keep')
+get_remote('config/components/ui/.keep')
+
+## models
+run 'mkdir config/locales/models'
+get_remote('config/locales/models/activemodel.en.yml')
+get_remote('config/locales/models/activemodel.ja.yml')
+get_remote('config/locales/models/activerecord.en.yml')
+get_remote('config/locales/models/activerecord.ja.yml')
+get_remote('config/locales/models/enums.en.yml')
+get_remote('config/locales/models/enums.ja.yml')
+
+## common
+get_remote('config/locales/common.en.yml')
+get_remote('config/locales/common.ja.yml')
+
+## default
+get_remote('config/locales/default.en.yml')
+get_remote('config/locales/default.ja.yml')
+
+## devise
+get_remote('config/locales/devise.en.yml')
+get_remote('config/locales/devise.ja.yml')
+
+## notice
+get_remote('config/locales/notice.en.yml')
+get_remote('config/locales/notice.ja.yml')
+
+## okcomputer
+get_remote('config/locales/okcomputer.en.yml')
+get_remote('config/locales/okcomputer.ja.yml')
 
 # Lookbook
 insert_into_file 'config/routes.rb',%(
@@ -213,8 +251,6 @@ get_remote('config/initializers/lograge.rb')
 
 # okcomputer
 get_remote('config/initializers/okcomputer.rb')
-get_remote('config/locales/okcomputer.en.yml')
-get_remote('config/locales/okcomputer.ja.yml')
 
 # switch_user
 get_remote('config/initializers/switch_user.rb')
@@ -237,7 +273,7 @@ get_remote('config/storage.rb')
 get_remote('config/importmap.rb')
 
 # i18n-tasks
-run 'cp $(bundle exec i18n-tasks gem-path)/templates/config/i18n-tasks.yml config/'
+get_remote('config/i18n-tasks.yml')
 run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
 
 after_bundle do

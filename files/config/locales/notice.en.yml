@@ -1,0 +1,8 @@
+---
+en:
+  notice:
+    created: Successfully created %{resource}
+    destroied: Successfully destroyed %{resource}
+    failed_to_destroy: Failed to destroy %{resource}
+    updated: Successfully updated %{resource}
+    updated_without_resource: Successfully updated

@@ -1,0 +1,8 @@
+---
+ja:
+  notice:
+    created: "%{resource}を作成しました"
+    destroied: "%{resource}を削除しました"
+    failed_to_destroy: "%{resource}の削除に失敗しました"
+    updated: "%{resource}の情報を更新しました"
+    updated_without_resource: 情報を更新しました
