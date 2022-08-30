@@ -184,6 +184,7 @@ run 'bundle exec rails g kaminari:config'
 run 'bundle exec rails g rspec:install'
 run "echo '--color -f d' > .rspec"
 get_remote('spec/rails_helper.rb')
+remove_file test
 
 # Lookbook
 insert_into_file 'config/routes.rb',%(
