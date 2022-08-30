@@ -1,4 +1,4 @@
-class PhoneNumberValidator < ActiveModel::Validator
+class PhoneNumberValidator < ActiveModel::EachValidator
   
   PHONE_REGEX = /\A
     (((0(
