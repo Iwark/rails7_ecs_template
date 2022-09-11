@@ -272,9 +272,6 @@ get_remote('config/initializers/sentry.rb')
 # sprockets
 get_remote('config/initializers/web_app_manifest.rb')
 
-# storage
-get_remote('config/storage.rb')
-
 # i18n-tasks
 get_remote('config/i18n-tasks.yml')
 run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
@@ -287,6 +284,9 @@ after_bundle do
   get_remote('app/javascript/application.js')
 
   get_remote('config/importmap.rb')
+
+  # storage
+  get_remote('config/storage.rb')
 
   # rubocop
   run 'bundle exec rubocop -A'
