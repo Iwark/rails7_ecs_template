@@ -62,6 +62,9 @@ insert_into_file 'app/views/layouts/application.html.erb', %(
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload", media: "all" %>
 ), after: '<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>'
 
+run 'mkdir app/assets/builds'
+run 'touch app/assets/builds/.keep'
+
 #####
 # Install gems
 #####
