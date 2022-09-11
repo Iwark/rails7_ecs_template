@@ -7,6 +7,7 @@ RSpec.describe I18n do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:inconsistent_interpolations) { i18n.inconsistent_interpolations }
+  let(:non_normalized) { i18n.non_normalized_paths }
 
   it 'does not have missing keys' do
     expect(missing_keys).to be_empty,
@@ -20,7 +21,6 @@ RSpec.describe I18n do
 
   it 'files are normalized' do
     skip if ENV['CI'].present? # skipped due different behaviour of libyaml
-    non_normalized = i18n.non_normalized_paths
     error_message = "The following files need to be normalized:\n" \
                     "#{non_normalized.map { |path| "  #{path}" }.join("\n")}\n" \
                     "Please run `i18n-tasks normalize' to fix"
