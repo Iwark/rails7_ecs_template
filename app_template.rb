@@ -286,7 +286,7 @@ after_bundle do
   get_remote('config/importmap.rb')
 
   # storage
-  get_remote('config/storage.rb')
+  get_remote('config/storage.yml')
 
   # i18n spec
   get_remote('spec/i18n_spec.rb')
