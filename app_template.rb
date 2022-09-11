@@ -288,6 +288,9 @@ after_bundle do
   # storage
   get_remote('config/storage.rb')
 
+  # i18n spec
+  get_remote('spec/i18n_spec.rb')
+
   # rubocop
   run 'bundle exec rubocop -A'
 
