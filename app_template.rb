@@ -148,15 +148,15 @@ insert_into_file 'config/environments/development.rb',%(
 ), after: 'config.assets.quiet = true'
 
 # Default url options for test
-insert_into_file 'config/environments/test.rb',%(
-  routes.default_url_options[:host]= 'localhost:3000'
+insert_into_file 'config/environments/test.rb', %(
+  routes.default_url_options[:host] = 'localhost:#{@web_port}'
 ), after: 'config.action_view.cache_template_loading = true'
 gsub_file "config/environments/test.rb", 'config.eager_load = false', 'config.eager_load = ENV["CI"].present?'
 
 # Letter opener
 insert_into_file 'config/environments/development.rb',%(
   
-  config.action_mailer.default_url_options = { host: Settings.domain, port: 3000 }
+  config.action_mailer.default_url_options = { host: Settings.domain, port: #{@web_port} }
   config.action_mailer.delivery_method = :letter_opener_web
 ), after: 'config.action_mailer.perform_caching = false'
 
