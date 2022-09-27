@@ -277,6 +277,11 @@ get_remote('config/initializers/web_app_manifest.rb')
 get_remote('config/i18n-tasks.yml')
 run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
 
+# seeds
+get_remote('db/seeds.rb')
+run 'mkdir db/seeds'
+run 'touch db/seeds/.keep'
+
 after_bundle do
 
   # javascripts & importmap
