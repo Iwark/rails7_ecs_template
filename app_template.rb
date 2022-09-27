@@ -173,9 +173,6 @@ insert_into_file 'config/environments/production.rb',%(
 ), after: 'config.action_mailer.perform_caching = false'
 gsub_file "config/environments/production.rb", 'config.active_storage.service = :local', 'config.active_storage.service = :amazon'
 
-# Japanese locale
-run 'wget https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
-
 # irbrc
 get_remote('irbrc', '.irbrc')
 
@@ -218,6 +215,7 @@ get_remote('config/locales/common.en.yml')
 get_remote('config/locales/common.ja.yml')
 
 ## default
+remove_file 'config/locales/en.yml'
 get_remote('config/locales/default.en.yml')
 get_remote('config/locales/default.ja.yml')
 
