@@ -281,6 +281,7 @@ run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
 get_remote('db/seeds.rb')
 run 'mkdir db/seeds'
 run 'touch db/seeds/.keep'
+get_remote('lib/tasks/refresh_seeds.rake')
 
 after_bundle do
 
