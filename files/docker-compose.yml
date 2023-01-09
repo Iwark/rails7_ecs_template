@@ -38,6 +38,7 @@ services:
       REDIS_PORT: $REDIS_PORT
       BUNDLE_PATH: /app/vendor/bundle
       BUNDLE_WITHOUT:
+      SELENIUM_DRIVER_URL: http://chromium:4444/wd/hub
     volumes:
       - ./:/app
       - ./vendor/bundle:/app/vendor/bundle
@@ -52,6 +53,10 @@ services:
       - "db"
       - "redis"
     tty: true
+  chromium:
+    image: seleniarm/standalone-chromium:4.7.2
+    ports:
+      - 4444:4444
 volumes:
   db:
   bundle:

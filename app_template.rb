@@ -189,6 +189,7 @@ get_remote('spec/rails_helper.rb')
 run 'mkdir spec/validators'
 get_remote('spec/validators/phone_number_validator_spec.rb')
 run 'mkdir -p spec/support/helper'
+get_remote('spec/support/driver_setting.rb')
 get_remote('spec/support/helper/custom_validator_helper.rb')
 remove_file 'test'
 
