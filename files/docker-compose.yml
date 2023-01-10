@@ -39,6 +39,7 @@ services:
       BUNDLE_PATH: /app/vendor/bundle
       BUNDLE_WITHOUT:
       SELENIUM_DRIVER_URL: http://chromium:4444/wd/hub
+      WEB_TEST_PORT: $WEB_TEST_PORT
     volumes:
       - ./:/app
       - ./vendor/bundle:/app/vendor/bundle
@@ -48,7 +49,8 @@ services:
       - /app/log
       - /app/.git
     ports:
-      - "$WEB_PORT:$WEB_PORT"
+      - "$WEB_DEV_PORT:$WEB_DEV_PORT"
+      - "$WEB_TEST_PORT:$WEB_TEST_PORT"
     depends_on:
       - "db"
       - "redis"

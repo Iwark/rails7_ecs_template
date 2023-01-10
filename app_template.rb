@@ -32,12 +32,15 @@ get_remote('Procfile.dev')
 
 @db_port = ask("Port for dev Postgres server (default: 5433)") || '5433'
 @redis_port = ask("Port for dev Redis server (default: 6380)") || '6380'
-@web_port = ask("Port for dev Web server (default: 3000)") || '3000'
+@web_dev_port = ask("Port for Web dev server (default: 3000)") || '3000'
+@web_test_port = ask("Port for Web test server (default: 3100)") || '3100'
 
 gsub_file "docker-compose.yml", '$DB_PORT', @db_port
 gsub_file "docker-compose.yml", '$REDIS_PORT', @redis_port
-gsub_file "docker-compose.yml", '$WEB_PORT', @web_port
-gsub_file "Procfile.dev", '$WEB_PORT', @web_port
+gsub_file "docker-compose.yml", '$WEB_DEV_PORT', @web_dev_port
+gsub_file "docker-compose.yml", '$WEB_TEST_PORT', @web_test_port
+
+gsub_file "Procfile.dev", '$WEB_DEV_PORT', @web_dev_port
 
 # Set database config to use postgresql
 get_remote('config/database.yml.example', 'config/database.yml')
@@ -152,14 +155,14 @@ insert_into_file 'config/environments/development.rb',%(
 
 # Default url options for test
 insert_into_file 'config/environments/test.rb', %(
-  routes.default_url_options[:host] = 'localhost:#{@web_port}'
+  routes.default_url_options[:host] = 'localhost:#{@web_test_port}'
 ), after: 'config.action_view.cache_template_loading = true'
 gsub_file "config/environments/test.rb", 'config.eager_load = false', 'config.eager_load = ENV["CI"].present?'
 
 # Letter opener
 insert_into_file 'config/environments/development.rb',%(
   
-  config.action_mailer.default_url_options = { host: Settings.domain, port: #{@web_port} }
+  config.action_mailer.default_url_options = { host: Settings.domain, port: #{@web_dev_port} }
   config.action_mailer.delivery_method = :letter_opener_web
 ), after: 'config.action_mailer.perform_caching = false'
 
