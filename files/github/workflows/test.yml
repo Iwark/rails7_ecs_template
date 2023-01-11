@@ -50,6 +50,9 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
+      - name: Set up chrome driver
+        uses: nanasess/setup-chromedriver@v1
+
       - name: Run test
         env:
           RAILS_ENV: test
