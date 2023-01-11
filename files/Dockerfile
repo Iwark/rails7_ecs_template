@@ -1,5 +1,5 @@
 # == base
-FROM ruby:3.1.2-alpine3.15 AS base
+FROM ruby:3.2.0-alpine3.17 AS base
 
 WORKDIR /app
 ENV RAILS_ENV production
@@ -8,7 +8,7 @@ ENV BUNDLE_PATH vendor/bundle
 ENV BUNDLE_WITHOUT development:test
 
 # build-base and gcompat are necessary for tailwindcss-rails to work properly
-RUN gem install bundler --no-document --version 2.3.5 && \
+RUN gem install bundler --no-document --version 2.4.3 && \
   apk update && apk add --no-cache --update \
   build-base \
   bash \

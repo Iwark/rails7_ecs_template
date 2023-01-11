@@ -2,7 +2,7 @@
 
 It generates a rails project with:
 
-- Ruby 3.1.2
+- Ruby 3.2.0
 - Rails 7.0
 - [tailwind](https://tailwindcss.com/)
 - [sidekiq](https://github.com/mperham/sidekiq) with Redis
