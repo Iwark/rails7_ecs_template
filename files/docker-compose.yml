@@ -59,6 +59,8 @@ services:
     image: seleniarm/standalone-chromium:4.7.2
     ports:
       - 4444:4444
+      - 5900:5900
+      - 7900:7900
 volumes:
   db:
   bundle:
