@@ -1,9 +1,9 @@
 Capybara.register_driver :remote_chrome do |app|
   url = ENV.fetch('SELENIUM_DRIVER_URL', nil)
+  args = %w[window-size=1200,970 no-sandbox disable-gpu disable-dev-shm-usage]
+  args << 'headless' if ENV['CI'].present?
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    'goog:chromeOptions': {
-      args: ['headless', 'window-size=1200,970', 'no-sandbox', 'disable-gpu', 'disable-dev-shm-usage']
-    }
+    'goog:chromeOptions': { args: }
   )
   Capybara::Selenium::Driver.new(app, browser: :chrome, url:, capabilities:)
 end
