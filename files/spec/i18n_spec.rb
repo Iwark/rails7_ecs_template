@@ -20,7 +20,7 @@ RSpec.describe I18n do
   end
 
   it 'files are normalized' do
-    skip if ENV['CI'].present? # skipped due different behaviour of libyaml
+    skip 'skipped due different behaviour of libyaml' if ENV['CI'].present?
     error_message = "The following files need to be normalized:\n" \
                     "#{non_normalized.map { |path| "  #{path}" }.join("\n")}\n" \
                     "Please run `i18n-tasks normalize' to fix"

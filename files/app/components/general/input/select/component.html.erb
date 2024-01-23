@@ -1,0 +1,19 @@
+<%= input_container(id: @options[:container_id], class: "#{@options[:class]} #{@attribute}", data: {
+  "#{controller_id}-placeholder-value": placeholder,
+  "#{controller_id}-search-value": !!@options[:search],
+  "#{controller_id}-disabled-value": !!@options[:disabled],
+}) do %>
+  <%= label %>
+  <div class="relative flex items-center">
+    <%= select({
+      class: select_classes,
+      data: (@options[:data] || {}).merge({
+        "#{controller_id}-target": 'input',
+      }),
+      disabled: @options[:disabled],
+      required: @options[:required] || @validations.include?('presence'),
+      multiple: @options[:multiple]
+    }) %>
+  </div>
+  <%= error_container %>
+<% end %>

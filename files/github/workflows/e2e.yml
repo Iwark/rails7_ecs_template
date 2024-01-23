@@ -1,4 +1,4 @@
-name: test
+name: e2e
 
 on:
   push:
@@ -14,8 +14,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  CHROME_VERSION: "114.0.5735.198-1"
+
 jobs:
-  test:
+  e2e:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     strategy:
@@ -50,19 +53,23 @@ jobs:
       - name: Set up Ruby, Bundler and Rails
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
-      - name: Run test
+      - name: Install Chrome
+        run: |
+          # Add the Google Chrome repository
+          wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb \
+          && sudo apt install -y --allow-downgrades /tmp/chrome.deb \
+          && rm /tmp/chrome.deb
+
+      - name: Set up chrome driver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Run system specs
         env:
           RAILS_ENV: test
           TEST_DATABASE_URL: postgres://${{ matrix.database-user }}:${{ matrix.database-password }}@${{ matrix.database-host }}:${{ matrix.database-port }}/${{ matrix.database-name }}
         run: |
           bundle exec rails assets:precompile
           bundle exec rails db:test:prepare
-          bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          bundle exec rspec spec/system

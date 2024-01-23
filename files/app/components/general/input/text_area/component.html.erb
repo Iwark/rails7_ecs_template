@@ -1,0 +1,22 @@
+<%= input_container(class: @options[:class], data: {
+  "#{controller_id}-max-length-value": (max_length || 0),
+}) do %>
+  <%= label %>
+  <div class="relative flex items-center">
+    <%= text_area(
+      class: 'appearance-none bg-transparent block w-full px-2 border border-gray-100 rounded-md placeholder-gray-100 focus:outline-none focus:border-black group-[.error]:!border-semantic-danger group-[.warning]:!border-warning-400',
+      data: merge_data({
+        "#{controller_id}-target": 'input',
+        action: "#{controller_id}#updateCounter"
+      }),
+      disabled: @options[:disabled],
+      placeholder:,
+      rows: @options[:rows] || 3
+    ) %>
+  </div>
+  <%= tag.small(
+    class: 'hidden [&.active]:inline-block group-[.error]:!hidden w-full text-right text-gray-60',
+    "data-#{controller_id}-target": 'counter',
+  ) %>
+  <%= error_container %>
+<% end %>

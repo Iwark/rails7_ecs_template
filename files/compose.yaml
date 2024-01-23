@@ -1,7 +1,7 @@
-version: "3.7"
+version: "3.9"
 services:
   db:
-    image: postgres:12
+    image: postgres:15
     restart: always
     environment:
       POSTGRES_PASSWORD: admin_pass
@@ -14,7 +14,7 @@ services:
       - "$DB_PORT:$DB_PORT"
     command: -p $DB_PORT
   redis:
-    image: redis:6.0
+    image: redis:7.0
     restart: always
     command: --port $REDIS_PORT
     volumes:
@@ -29,6 +29,7 @@ services:
     build: ./
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec foreman start -f Procfile.dev"
     environment:
+      APP_DOMAIN: localhost.scvl.jp
       TEST_DATABASE_URL: postgres://myuser:admin_pass@db:$DB_PORT/mydb_test
       DATABASE_URL: postgres://myuser:admin_pass@db:$DB_PORT/mydb
       RAILS_ENV: development
@@ -38,8 +39,7 @@ services:
       REDIS_PORT: $REDIS_PORT
       BUNDLE_PATH: /app/vendor/bundle
       BUNDLE_WITHOUT:
-      SELENIUM_DRIVER_URL: http://chromium:4444/wd/hub
-      WEB_TEST_PORT: $WEB_TEST_PORT
+      CHROME_URL: http://chrome:$CHROME_PORT
     volumes:
       - ./:/app
       - ./vendor/bundle:/app/vendor/bundle
@@ -50,17 +50,20 @@ services:
       - /app/.git
     ports:
       - "$WEB_DEV_PORT:$WEB_DEV_PORT"
-      - "$WEB_TEST_PORT:$WEB_TEST_PORT"
     depends_on:
       - "db"
       - "redis"
     tty: true
-  chromium:
-    image: seleniarm/standalone-chromium:4.7.2
+  chrome:
+    image: browserless/chrome:latest
     ports:
-      - 4444:4444
-      - 5900:5900
-      - 7900:7900
+      - "$CHROME_PORT:$CHROME_PORT"
+    volumes:
+      - .:/app:cached
+    environment:
+      PORT: $CHROME_PORT
+      # https://docs.browserless.io/docs/docker.html#connection-timeout
+      CONNECTION_TIMEOUT: 600000
 volumes:
   db:
   bundle:

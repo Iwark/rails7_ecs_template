@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&subset=japanese");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +9,32 @@
  * applied to plain HTML elements.
  */
 @layer base {
+  html,
+  body {
+    font-size: 16px;
+    line-height: 24px;
+
+    @apply text-black font-hiragino-kaku-gothic-pro;
+  }
+  h1 {
+    @apply font-bold text-xl;
+  }
+  h2 {
+    @apply font-bold text-lg;
+  }
+  p:empty::after {
+    content: "\00A0";
+  }
+  select {
+    height: 2rem;
+  }
+  select:invalid {
+    @apply text-gray-10;
+  }
+  select option[value=""] {
+    @apply text-gray-10;
+    display: none;
+  }
 }
 
 /**
@@ -21,4 +49,28 @@
  * that should always take precedence over any other styles.
  */
 @layer utilities {
+  .overflow-scrollbar::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background-color: #fcfcfc;
+  }
+  .overflow-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 8px 8px #909090;
+    border: solid 4px transparent;
+  }
+  .field_with_errors {
+    width: 100%;
+  }
+  .hidden-but-exists {
+    opacity: 0;
+    position: absolute;
+    height: 1;
+    width: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
 }
+
+@import "slimselect.css";
+@import "prosemirror.css";

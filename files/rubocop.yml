@@ -1,6 +1,8 @@
 require:
+  - rubocop-capybara
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-factory_bot
 AllCops:
   NewCops: enable
   Exclude:
@@ -9,16 +11,34 @@ AllCops:
     - "db/**/*"
     - "vendor/**/*"
     - "lib/tasks/auto_annotate_models.rake"
-Documentation:
-  Enabled: false
 Lint/EmptyBlock:
   Exclude:
     - "spec/factories/*"
+Metrics/ClassLength:
+  Max: 120
+Metrics/ParameterLists:
+  MaxOptionalParameters: 5
 Rails/UnknownEnv:
   Environments:
     - development
     - production
     - staging
     - test
+Rails/WhereNotWithMultipleConditions:
+  Enabled: false
+RSpec/ExampleLength:
+  Max: 20
+  Exclude:
+    - "spec/system/*"
+RSpec/MultipleExpectations:
+  Max: 5
+  Exclude:
+    - "spec/system/*"
+Style/Documentation:
+  Enabled: false
 Style/FrozenStringLiteralComment:
+  Enabled: false
+FactoryBot/AssociationStyle:
+  EnforcedStyle: explicit
+FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false

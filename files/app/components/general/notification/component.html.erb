@@ -1,0 +1,24 @@
+<div 
+  data-controller="<%= controller_id %>"
+  class="w-full max-w-sm mb-2 bg-white rounded-lg shadow-lg pointer-events-auto animate-fade-in-left"
+>
+  <div class="overflow-hidden rounded-lg shadow-xs bg-brand-navy-100">
+    <div class="p-4">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <div class="w-6 h-6">
+            <%= icon %>
+          </div>
+        </div>
+        <div class="ml-3 w-0 flex-1 pt-0.5">
+          <p class="text-sm font-medium leading-5 text-white"><%= @message %></p>
+        </div>
+        <div class="flex flex-shrink-0 ml-4">
+          <a class="hover:cursor-pointer" data-action="click-><%= controller_id %>#removeNotification">
+            <i class="text-white fa-solid fa-times"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

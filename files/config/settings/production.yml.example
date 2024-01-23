@@ -1,3 +1,0 @@
-domain: 'example.com'
-aws:
-  bucket_name: 'myapp'

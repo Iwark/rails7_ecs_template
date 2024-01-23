@@ -1,66 +1,94 @@
-def get_remote(src, dest = nil)
-  dest ||= src
-  repo = 'https://raw.github.com/Iwark/rails7_ecs_template/master/files/'
-  remote_file = repo + src
-  remove_file dest
-  get(remote_file, dest)
+require 'net/http'
+require 'uri'
+require 'json'
+
+REPO = 'Iwark/rails7_ecs_template'.freeze
+
+def get_github_directory_contents(path)
+  url = if path.start_with?('/') 
+          URI.parse("https://api.github.com#{path}")
+        else
+          URI.parse("https://api.github.com/repos/#{REPO}/contents/#{path}")
+        end
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = (url.scheme == 'https')
+  request = Net::HTTP::Get.new(url.request_uri)
+  request['Accept'] = 'application/vnd.github.v3+json'
+  response = http.request(request)
+  case response.code
+  when '200'
+    JSON.parse(response.body)
+  when '302', '301'
+    new_location = response['location']
+    puts "Redirect to: #{new_location}"
+    get_github_directory_contents(URI.parse(new_location).path)
+  else
+    puts "Error url: #{url}, response: #{response.code}"
+    []
+  end
+end
+
+def fetch_dir(path, local_dir=nil)
+  local_dir ||= path
+  path = "files/#{path}" unless path.start_with?('files/')
+  FileUtils.mkdir_p(local_dir)
+  get_github_directory_contents(path).each do |file|
+    # Check if it's a file or a directory
+    if file['type'] == 'file'
+      local_file_path = File.join(local_dir, file['name'])
+      get(file['download_url'], local_file_path)
+    elsif file['type'] == 'dir'
+      new_path = File.join(local_dir, file['name'])
+      fetch_dir(file['path'], new_path)
+    end
+  end
+end
+
+def fetch_file(remote_file, local_file = nil)
+  local_file ||= remote_file
+  remote_file = "files/#{remote_file}" unless remote_file.start_with?('files/')
+  remote_path = "https://raw.githubusercontent.com/#{REPO}/main/#{remote_file}"
+  remove_file(local_file)
+  get(remote_path, local_file)
 end
 
 @app_name = app_name
 
-# vscode settings
-run 'mkdir .vscode'
-get_remote('vscode/settings.json', '.vscode/settings.json')
-
-# .tool_versions
-get_remote('tool-versions', '.tool-versions')
-
-# gitignore
-get_remote('gitignore', '.gitignore')
+fetch_dir('vscode/', '.vscode/')
+fetch_file('tool-versions', '.tool-versions')
+fetch_file('gitignore', '.gitignore')
 
 # CI/CD (github action)
-run 'mkdir -p .github/workflows'
-get_remote('github/workflows/deploy.yml', '.github/workflows/deploy.yml')
+fetch_dir('github/', '.github/')
 gsub_file ".github/workflows/deploy.yml", /myapp/, @app_name
-get_remote('github/workflows/lint.yml', '.github/workflows/lint.yml')
-get_remote('github/workflows/test.yml', '.github/workflows/test.yml')
 
 # docker
-get_remote('Dockerfile')
-get_remote('docker-compose.yml')
-get_remote('Procfile.dev')
+fetch_file('Dockerfile')
+fetch_file('compose.yaml')
+fetch_file('Procfile.dev')
 
 @db_port = ask("Port for dev Postgres server (default: 5433)") || '5433'
 @redis_port = ask("Port for dev Redis server (default: 6380)") || '6380'
 @web_dev_port = ask("Port for Web dev server (default: 3000)") || '3000'
-@web_test_port = ask("Port for Web test server (default: 3100)") || '3100'
+@chrome_port = ask("Port for Chrome server (default: 3300)") || '3300'
 
-gsub_file "docker-compose.yml", '$DB_PORT', @db_port
-gsub_file "docker-compose.yml", '$REDIS_PORT', @redis_port
-gsub_file "docker-compose.yml", '$WEB_DEV_PORT', @web_dev_port
-gsub_file "docker-compose.yml", '$WEB_TEST_PORT', @web_test_port
+gsub_file "compose.yaml", '$DB_PORT', @db_port
+gsub_file "compose.yaml", '$REDIS_PORT', @redis_port
+gsub_file "compose.yaml", '$WEB_DEV_PORT', @web_dev_port
+gsub_file "compose.yaml", '$CHROME_PORT', @chrome_port
 
 gsub_file "Procfile.dev", '$WEB_DEV_PORT', @web_dev_port
 
 # Set database config to use postgresql
-get_remote('config/database.yml.example', 'config/database.yml')
+fetch_file('config/database.yml.example', 'config/database.yml')
 run 'mkdir tmp/backups'
 
-# vendor
-run 'mkdir vendor/javascript'
-run 'touch vendor/javascript/.keep'
-
-# components
-run 'mkdir app/components'
-get_remote('app/components/app_component.rb')
-
-# validators
-run 'mkdir app/validators'
-get_remote('app/validators/phone_number_validator.rb')
+fetch_dir('app/components/')
+fetch_dir('app/validators/')
 
 # tailwind
-get_remote('config/tailwind.config.js')
-get_remote('app/assets/stylesheets/application.tailwind.css')
+fetch_file('config/tailwind.config.js')
+fetch_file('app/assets/stylesheets/application.tailwind.css')
 insert_into_file 'app/views/layouts/application.html.erb', %(
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload", media: "all" %>
 ), after: '<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>'
@@ -72,8 +100,10 @@ run 'touch app/assets/builds/.keep'
 # Install gems
 #####
 
-get_remote('Gemfile')
+fetch_file('Gemfile')
 run 'bundle lock --add-platform aarch64-linux-musl'
+run 'bundle lock --add-platform arm64-darwin-23'
+run 'bundle lock --add-platform x86_64-linux'
 run 'bundle lock --add-platform x86_64-linux-musl'
 run 'bundle install --path vendor/bundle --jobs=4'
 run 'docker compose run --rm web bundle install'
@@ -83,7 +113,7 @@ run "bundle exec spring stop"
 
 # Devise
 run 'bundle exec rails g devise:install'
-gsub_file "config/initializers/devise.rb", /'please-change-me-at-config-initializers-devise@example.com'/, '"no-reply@#{Settings.domain}"'
+gsub_file "config/initializers/devise.rb", /'please-change-me-at-config-initializers-devise@example.com'/, "\"no-reply@\#{ENV.fetch('APP_DOMAIN', 'dev.localhost')}\""
 
 # set up db
 run 'docker compose run --rm web bundle exec rails db:create'
@@ -149,20 +179,20 @@ insert_into_file 'config/environments/development.rb',%(
     Bullet.rails_logger = true # log to rails log
   end
 
-  config.hosts << Settings.domain
+  config.hosts << ENV.fetch('APP_DOMAIN', 'dev.localhost')
   config.web_console.permissions = '0.0.0.0/0'
 ), after: 'config.assets.quiet = true'
 
 # Default url options for test
 insert_into_file 'config/environments/test.rb', %(
-  routes.default_url_options[:host] = 'localhost:#{@web_test_port}'
+  routes.default_url_options[:host] = 'localhost:#{@web_dev_port}'
 ), after: 'config.action_view.cache_template_loading = true'
 gsub_file "config/environments/test.rb", 'config.eager_load = false', 'config.eager_load = ENV["CI"].present?'
 
 # Letter opener
 insert_into_file 'config/environments/development.rb',%(
   
-  config.action_mailer.default_url_options = { host: Settings.domain, port: #{@web_dev_port} }
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_DOMAIN', 'dev.localhost'), port: #{@web_dev_port} }
   config.action_mailer.delivery_method = :letter_opener_web
 ), after: 'config.action_mailer.perform_caching = false'
 
@@ -170,17 +200,17 @@ insert_into_file 'config/environments/development.rb',%(
 insert_into_file 'config/environments/production.rb',%(
   config.action_mailer.default_url_options = {
     protocol: 'https',
-    host: Settings.domain,
+    host: ENV.fetch('APP_DOMAIN'),
   }
   config.action_mailer.delivery_method = :ses
 ), after: 'config.action_mailer.perform_caching = false'
 gsub_file "config/environments/production.rb", 'config.active_storage.service = :local', 'config.active_storage.service = :amazon'
 
 # irbrc
-get_remote('irbrc', '.irbrc')
+fetch_file('irbrc', '.irbrc')
 
 # Rubocop
-get_remote('rubocop.yml', '.rubocop.yml')
+fetch_file('rubocop.yml', '.rubocop.yml')
 
 # Kaminari config
 run 'bundle exec rails g kaminari:config'
@@ -188,52 +218,15 @@ run 'bundle exec rails g kaminari:config'
 # Rspec
 run 'bundle exec rails g rspec:install'
 run "echo '--color -f d' > .rspec"
-get_remote('spec/rails_helper.rb')
-run 'mkdir spec/validators'
-get_remote('spec/validators/phone_number_validator_spec.rb')
-run 'mkdir -p spec/support/helper'
-get_remote('spec/support/driver_setting.rb')
-get_remote('spec/support/helper/custom_validator_helper.rb')
+fetch_file('spec/rails_helper.rb')
+fetch_file('spec/system_helper.rb')
+fetch_dir('spec/validators/')
+fetch_dir('spec/system/support/')
+gsub_file "spec/system/support/cuprite_setup.rb", '$CHROME_PORT', @chrome_port
+
 remove_file 'test'
 
-# locales
-
-## components
-run 'mkdir config/locales/components'
-run 'mkdir config/locales/components/common'
-run 'mkdir config/locales/components/ui'
-get_remote('config/locales/components/common/.keep')
-get_remote('config/locales/components/ui/.keep')
-
-## models
-run 'mkdir config/locales/models'
-get_remote('config/locales/models/activemodel.en.yml')
-get_remote('config/locales/models/activemodel.ja.yml')
-get_remote('config/locales/models/activerecord.en.yml')
-get_remote('config/locales/models/activerecord.ja.yml')
-get_remote('config/locales/models/enums.en.yml')
-get_remote('config/locales/models/enums.ja.yml')
-
-## common
-get_remote('config/locales/common.en.yml')
-get_remote('config/locales/common.ja.yml')
-
-## default
-remove_file 'config/locales/en.yml'
-get_remote('config/locales/default.en.yml')
-get_remote('config/locales/default.ja.yml')
-
-## devise
-get_remote('config/locales/devise.en.yml')
-get_remote('config/locales/devise.ja.yml')
-
-## notice
-get_remote('config/locales/notice.en.yml')
-get_remote('config/locales/notice.ja.yml')
-
-## okcomputer
-get_remote('config/locales/okcomputer.en.yml')
-get_remote('config/locales/okcomputer.ja.yml')
+fetch_dir('config/locales/')
 
 # Lookbook
 insert_into_file 'config/routes.rb',%(
@@ -241,66 +234,56 @@ insert_into_file 'config/routes.rb',%(
 ), after: 'Rails.application.routes.draw do'
 
 # Guard
-get_remote('Guardfile')
-
-# Settings
-run 'mkdir config/settings'
-get_remote('config/settings/development.yml.example', 'config/settings/development.yml')
-get_remote('config/settings/production.yml.example', 'config/settings/production.yml')
-get_remote('config/settings/test.yml.example', 'config/settings/test.yml')
-get_remote('config/settings.yml.example', 'config/settings.yml')
-gsub_file "config/settings/development.yml", /myapp/, @app_name
-gsub_file "config/settings/production.yml", /myapp/, @app_name
-gsub_file "config/settings/test.yml", /myapp/, @app_name
-gsub_file "config/settings.yml", /myapp/, @app_name
+fetch_file('Guardfile')
 
 # AWS
-get_remote('config/initializers/aws.rb')
+fetch_file('config/initializers/aws.rb')
 
 # lograge
-get_remote('config/initializers/lograge.rb')
+fetch_file('config/initializers/lograge.rb')
 
 # okcomputer
-get_remote('config/initializers/okcomputer.rb')
+fetch_file('config/initializers/okcomputer.rb')
 
 # switch_user
-get_remote('config/initializers/switch_user.rb')
+fetch_file('config/initializers/switch_user.rb')
 
 # sidekiq
-get_remote('app/jobs/application_job.rb')
-get_remote('config/initializers/sidekiq.rb')
-get_remote('config/sidekiq.rb')
+fetch_file('app/jobs/application_job.rb')
+fetch_file('config/initializers/sidekiq.rb')
+fetch_file('config/sidekiq.rb')
 
 # sentry
-get_remote('config/initializers/sentry.rb')
+fetch_file('config/initializers/sentry.rb')
 
 # sprockets
-get_remote('config/initializers/web_app_manifest.rb')
+fetch_file('config/initializers/web_app_manifest.rb')
 
 # i18n-tasks
-get_remote('config/i18n-tasks.yml')
+fetch_file('config/i18n-tasks.yml')
 run 'cp $(bundle exec i18n-tasks gem-path)/templates/rspec/i18n_spec.rb spec/'
 
 # seeds
-get_remote('db/seeds.rb')
+fetch_file('db/seeds.rb')
 run 'mkdir db/seeds'
 run 'touch db/seeds/.keep'
-get_remote('lib/tasks/refresh_seeds.rake')
+fetch_file('lib/tasks/refresh_seeds.rake')
 
 after_bundle do
 
   # javascripts & importmap
-  get_remote('app/assets/config/manifest.js')
-  get_remote('app/javascript/controllers/index.js')
-  get_remote('app/javascript/application.js')
+  fetch_file('app/assets/config/manifest.js')
+  fetch_file('app/javascript/controllers/index.js')
+  fetch_file('app/javascript/application.js')
 
-  get_remote('config/importmap.rb')
+  fetch_file('config/importmap.rb')
 
   # storage
-  get_remote('config/storage.yml')
+  fetch_file('config/puma.rb')
+  fetch_file('config/storage.yml')
 
   # i18n spec
-  get_remote('spec/i18n_spec.rb')
+  fetch_file('spec/i18n_spec.rb')
 
   # rubocop
   run 'bundle exec rubocop -A'
@@ -308,5 +291,5 @@ after_bundle do
   # git
   git :init
   git add: '.'
-  git commit: "-a -m 'rails new #{@app_name} -m https://raw.githubusercontent.com/Iwark/rails7_ecs_template/master/app_template.rb'"
+  git commit: "-a -m 'rails new #{@app_name} -m https://raw.githubusercontent.com/#{REPO}/main/app_template.rb'"
 end

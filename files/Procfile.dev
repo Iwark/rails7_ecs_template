@@ -1,4 +1,3 @@
-web: bin/rails db:setup && bin/rails db:test:prepare && bin/rails server -p $WEB_DEV_PORT -e development -b '0.0.0.0'
+web: bin/rails server -p $WEB_DEV_PORT -e development -b '0.0.0.0'
 css: bin/rails tailwindcss:watch
-guard: RAILS_ENV=test bundle exec guard --no-bundler-warning --no-interactions
-sidekiq: bundle exec sidekiq
+# guard: RAILS_ENV=test bundle exec guard --no-bundler-warning --no-interactions
