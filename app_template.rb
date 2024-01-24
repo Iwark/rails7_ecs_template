@@ -185,8 +185,8 @@ insert_into_file 'config/environments/development.rb',%(
 
 # Default url options for test
 insert_into_file 'config/environments/test.rb', %(
-  routes.default_url_options[:host] = 'localhost:#{@web_dev_port}'
-), after: 'config.action_view.cache_template_loading = true'
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_DOMAIN', 'dev.localhost'), port: #{@web_dev_port} }
+), after: 'config.action_mailer.delivery_method = :test'
 gsub_file "config/environments/test.rb", 'config.eager_load = false', 'config.eager_load = ENV["CI"].present?'
 
 # Letter opener
