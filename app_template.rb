@@ -227,6 +227,7 @@ gsub_file "spec/system/support/cuprite_setup.rb", '$CHROME_PORT', @chrome_port
 remove_file 'test'
 
 fetch_dir('config/locales/')
+remove_file 'config/locales/en.yml'
 
 # Lookbook
 insert_into_file 'config/routes.rb',%(

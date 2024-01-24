@@ -1,0 +1,7 @@
+---
+en:
+  helpers:
+    select:
+      no_options: No %{attr_name} options are registered
+      option: available
+      prompt: Please select

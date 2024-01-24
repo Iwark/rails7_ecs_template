@@ -125,6 +125,8 @@ ignore_unused:
   - "activerecord.attributes.*"
   - "activerecord.errors.messages.*"
   - "activerecord.models.*"
+  - "common.*"
+  - "devise.*"
   - "enums.*"
   - "date.*"
   - "datetime.*"

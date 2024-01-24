@@ -1,5 +1,6 @@
+---
 ja:
   okcomputer:
     check:
-      passed: "%{registrant_name}: PASSED %{message} (%{time})"
       failed: "%{registrant_name}: FAILED %{message} (%{time})"
+      passed: "%{registrant_name}: PASSED %{message} (%{time})"

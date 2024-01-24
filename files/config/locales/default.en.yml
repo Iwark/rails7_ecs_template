@@ -140,8 +140,6 @@ en:
         one: 1 error prohibited this %{model} from being saved
         other: "%{count} errors prohibited this %{model} from being saved"
   helpers:
-    select:
-      prompt: Please select
     submit:
       create: Create %{model}
       submit: Save %{model}

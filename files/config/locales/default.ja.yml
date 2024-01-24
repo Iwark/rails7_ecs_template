@@ -134,8 +134,6 @@ ja:
         one: "%{model}にエラーが発生しました"
         other: "%{model}に%{count}個のエラーが発生しました"
   helpers:
-    select:
-      prompt: 選択してください
     submit:
       create: 登録する
       submit: 保存する

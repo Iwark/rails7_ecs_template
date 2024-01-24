@@ -1,0 +1,7 @@
+---
+ja:
+  helpers:
+    select:
+      no_options: "%{attr_name}が登録されていません"
+      option: 利用可能な選択肢
+      prompt: 選択してください
