@@ -3,10 +3,11 @@ FROM ruby:3.2.3-alpine AS base
 
 WORKDIR /app
 
-ENV RAILS_ENV production
-ENV BUNDLE_DEPLOYMENT true
-ENV BUNDLE_PATH vendor/bundle
-ENV BUNDLE_WITHOUT development:test
+ENV APP_DOMAIN=localhost.scvl.jp \
+  RAILS_ENV=production \
+  BUNDLE_DEPLOYMENT=true \
+  BUNDLE_PATH=vendor/bundle \
+  BUNDLE_WITHOUT=development:test
 
 # build-base and gcompat are necessary for tailwindcss-rails to work properly
 RUN gem install bundler --no-document --version 2.5.5 && \
