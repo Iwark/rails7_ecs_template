@@ -222,6 +222,7 @@ fetch_file('spec/rails_helper.rb')
 fetch_file('spec/system_helper.rb')
 fetch_dir('spec/validators/')
 fetch_dir('spec/system/support/')
+fetch_dir('spec/support/')
 gsub_file "spec/system/support/cuprite_setup.rb", '$CHROME_PORT', @chrome_port
 
 remove_file 'test'
