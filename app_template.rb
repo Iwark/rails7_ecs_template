@@ -219,6 +219,7 @@ run 'bundle exec rails g kaminari:config'
 run 'bundle exec rails g rspec:install'
 run "echo '--color -f d' > .rspec"
 fetch_file('spec/rails_helper.rb')
+fetch_file('spec/spec_helper.rb')
 fetch_file('spec/system_helper.rb')
 fetch_dir('spec/validators/')
 fetch_dir('spec/system/support/')
