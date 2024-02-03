@@ -205,6 +205,7 @@ insert_into_file 'config/environments/production.rb',%(
   config.action_mailer.delivery_method = :ses
 ), after: 'config.action_mailer.perform_caching = false'
 gsub_file "config/environments/production.rb", 'config.active_storage.service = :local', 'config.active_storage.service = :amazon'
+gsub_file "config/environments/production.rb", '# config.cache_store = :mem_cache_store', "config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }"
 
 # irbrc
 fetch_file('irbrc', '.irbrc')

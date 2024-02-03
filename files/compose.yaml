@@ -14,7 +14,7 @@ services:
       - "$DB_PORT:$DB_PORT"
     command: -p $DB_PORT
   redis:
-    image: redis:7.0
+    image: redis:7.1
     restart: always
     command: --port $REDIS_PORT
     volumes:
@@ -35,8 +35,7 @@ services:
       RAILS_ENV: development
       NODE_ENV: development
       RAILS_MAX_THREADS: 5
-      REDIS_HOST: redis
-      REDIS_PORT: $REDIS_PORT
+      REDIS_URL: redis://redis:$REDIS_PORT/0
       BUNDLE_PATH: /app/vendor/bundle
       BUNDLE_WITHOUT:
       CHROME_URL: http://chrome:$CHROME_PORT
