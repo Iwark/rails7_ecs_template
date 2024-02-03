@@ -11,8 +11,8 @@ env:
   HEAD_SHA: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: buildjet-4vcpu-ubuntu-2204-arm
     permissions:
       id-token: write
       contents: read
@@ -37,7 +37,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ env.HEAD_SHA }}
