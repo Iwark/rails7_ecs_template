@@ -89,6 +89,7 @@ gem 'sentry-ruby'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
+gem 'stackprof'
 gem 'switch_user'
 gem 'view_component', '>= 2.50.0'
 
