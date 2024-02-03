@@ -9,4 +9,4 @@ local:
 amazon:
   service: S3
   region: ap-northeast-1
-  bucket: <%= Rails.application.credentials.s3_bucket %>
+  bucket: <%= ENV.fetch("S3_BUCKET", Rails.application.credentials.s3_bucket) %>
