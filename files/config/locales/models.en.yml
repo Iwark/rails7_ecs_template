@@ -4,3 +4,4 @@ en:
     errors:
       messages:
         invalid_phone_number_format: Invalid phone number format
+        record_invalid: Failed to validate. %{errors}

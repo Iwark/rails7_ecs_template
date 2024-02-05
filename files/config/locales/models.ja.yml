@@ -4,3 +4,4 @@ ja:
     errors:
       messages:
         invalid_phone_number_format: 正しい電話番号ではありません
+        record_invalid: バリデーションに失敗しました - %{errors}
