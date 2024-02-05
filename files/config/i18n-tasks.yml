@@ -22,7 +22,7 @@ data:
   # Locale files to write new keys to, based on a list of key pattern => file rules. Matched from top to bottom:
   # `i18n-tasks normalize -p` will force move the keys according to these rules
   write:
-    - ["{common, okcomputer, notice}.*", 'config/locales/\1.%{locale}.yml']
+    - ["{common, notice}.*", 'config/locales/\1.%{locale}.yml']
     - [
         "{activemodel, activerecord, enums}.*",
         'config/locales/models/\1.%{locale}.yml',
@@ -134,7 +134,6 @@ ignore_unused:
   - "helpers.*"
   - "number.*"
   - "notice.*"
-  - "okcomputer.*"
   - "support.*"
   - "time.*"
 ## Exclude these keys from the `i18n-tasks eq-base' report:

@@ -246,9 +246,6 @@ fetch_file('config/initializers/aws.rb')
 # lograge
 fetch_file('config/initializers/lograge.rb')
 
-# okcomputer
-fetch_file('config/initializers/okcomputer.rb')
-
 # switch_user
 fetch_file('config/initializers/switch_user.rb')
 

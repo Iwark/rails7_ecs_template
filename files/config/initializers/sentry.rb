@@ -11,7 +11,7 @@ Sentry.init do |config|
     case op
     when /http/
       case name
-      when /health_checks/
+      when '/up'
         0.0
       else
         1.0
