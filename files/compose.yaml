@@ -14,7 +14,7 @@ services:
       - "$DB_PORT:$DB_PORT"
     command: -p $DB_PORT
   redis:
-    image: redis:7.1
+    image: redis:7.2
     restart: always
     command: --port $REDIS_PORT
     volumes:
