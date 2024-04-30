@@ -50,7 +50,6 @@ jobs:
       - name: Set up Ruby, Bundler and Rails
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
 
       - name: Run test
