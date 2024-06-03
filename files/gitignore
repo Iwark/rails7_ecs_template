@@ -37,6 +37,7 @@
 /config/credentials/staging.key
 
 ## custom
+coverage/
 vendor/bundle
 doc/
 *.swp
